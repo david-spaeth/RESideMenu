@@ -62,4 +62,32 @@
     NSLog(@"didHideMenuViewController: %@", NSStringFromClass([menuViewController class]));
 }
 
+-(void) sideMenu:(RESideMenu *)sideMenu settingAnimateContentViewContainer:(UIView *)contentViewContainer menuViewController:(UIViewController *)menuViewController
+{
+    BOOL leftMenu = [DEMOLeftMenuViewController class] == [menuViewController class];
+    
+    //add airbnb effect
+    if(leftMenu)
+    {
+        CATransform3D contentTransform = contentViewContainer.layer.transform;
+        contentTransform.m34 = -1.0f / 1400.0f;
+        contentViewContainer.layer.zPosition = 200;
+        contentTransform = CATransform3DRotate(contentTransform, (-40 * M_PI / 180), 0.0, 1.0, 0.0);
+        [contentViewContainer.layer  setTransform:contentTransform];
+        
+    }else
+    {
+     
+        CATransform3D contentTransform = contentViewContainer.layer.transform;
+        contentTransform.m34 = 1.0f / 1400.0f;
+        contentViewContainer.layer.zPosition = 200;
+        contentTransform = CATransform3DRotate(contentTransform, (-40 * M_PI / 180), 0.0, 1.0, 0.0);
+        [contentViewContainer.layer  setTransform:contentTransform];
+
+        
+    }
+    
+    
+}
+
 @end

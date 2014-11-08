@@ -299,7 +299,11 @@
         self.menuViewContainer.transform = CGAffineTransformIdentity;
         if (self.scaleBackgroundImageView)
             self.backgroundImageView.transform = CGAffineTransformIdentity;
-            
+        
+        if ([self.delegate conformsToProtocol:@protocol(RESideMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:settingAnimateContentViewContainer:menuViewController:)]) {
+            [self.delegate sideMenu:self settingAnimateContentViewContainer:self.contentViewContainer menuViewController:self.leftMenuViewController];
+        }
+        
     } completion:^(BOOL finished) {
         [self addContentViewControllerMotionEffects];
         
@@ -340,6 +344,10 @@
         self.menuViewContainer.transform = CGAffineTransformIdentity;
         if (self.scaleBackgroundImageView)
             self.backgroundImageView.transform = CGAffineTransformIdentity;
+        
+        if ([self.delegate conformsToProtocol:@protocol(RESideMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:settingAnimateContentViewContainer:menuViewController:)]) {
+            [self.delegate sideMenu:self settingAnimateContentViewContainer:self.contentViewContainer menuViewController:self.rightMenuViewController];
+        }
         
     } completion:^(BOOL finished) {
         if (!self.rightMenuVisible && [self.delegate conformsToProtocol:@protocol(RESideMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:didShowMenuViewController:)]) {
@@ -788,15 +796,24 @@
             self.contentViewContainer.transform = CGAffineTransformIdentity;
         }
         
+       
+        UIViewController * visibleMenu;
+        
         CGPoint center;
         if (self.leftMenuVisible) {
+            visibleMenu= self.leftMenuViewController;
             if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
                 center = CGPointMake((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? self.contentViewInLandscapeOffsetCenterX + CGRectGetWidth(self.view.frame) : self.contentViewInPortraitOffsetCenterX + CGRectGetWidth(self.view.frame)), self.contentViewContainer.center.y);
             } else {
                 center = CGPointMake((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? self.contentViewInLandscapeOffsetCenterX + CGRectGetHeight(self.view.frame) : self.contentViewInPortraitOffsetCenterX + CGRectGetWidth(self.view.frame)), self.contentViewContainer.center.y);
             }
         } else {
+            visibleMenu= self.rightMenuViewController;
             center = CGPointMake((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? -self.contentViewInLandscapeOffsetCenterX : -self.contentViewInPortraitOffsetCenterX), self.contentViewContainer.center.y);
+        }
+        
+        if ([self.delegate conformsToProtocol:@protocol(RESideMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:settingAnimateContentViewContainer:menuViewController:)]) {
+            [self.delegate sideMenu:self settingAnimateContentViewContainer:self.contentViewContainer menuViewController:visibleMenu];
         }
         
         self.contentViewContainer.center = center;
